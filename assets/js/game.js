@@ -8,16 +8,15 @@ var blanksArray = [];
 var displayWord;
 var displayBlanks = [];
 var wins = 0;
-var remainingGuesses = 15;
+var remainingCorrectGuesses; // = currentWordArray.length minus non-unique letters
+var remainingWrongGuesses = 6;
 var alreadyGuessed = [];
 // This function takes the currentWord, pushes each letter into the currentWordArray and then puts a blank into blanksArray for each letter; then, it joins them into one string for display in the html:
 function getLetters() {
-
   for (i = 0; i < currentWord.length; i++) {
     currentWordArray.push(currentWord.charAt(i));
     blanksArray.push('_');
   }
-
 }
 
 // getLetters();
@@ -25,49 +24,54 @@ function getLetters() {
 //  console.log(currentWordArray.join(' '));
 //  console.log(blanksArray.join(' '));
 
-// RUN GAME
+// GAME FUNCTION
 function hangmanGame() {
 
   document.onkeyup = function (event) {
-    var userGuess = event.key;
+
+    var userGuess = event.key.toLowerCase();
+    var wrongUserGuess;
+
+    if (currentWordArray.includes(userGuess)) {
+      var wrongUserGuess = false;
+    } else {
+      wrongUserGuess = true;
+    }
+
+    if (wrongUserGuess) {
+      alreadyGuessed.push(userGuess);
+      remainingWrongGuesses--;
+    }
 
     for (i = 0; i < currentWordArray.length; i++) {
-
       if (userGuess === currentWordArray[i]) {
         blanksArray.splice(i, 1, currentWordArray[i]);
+        remainingCorrectGuesses--;
         document.getElementById("word-blanks").innerHTML = blanksArray.join(' ');
       }
-
-      // not working:
-      // else {
-      //   alreadyGuessed.push(userGuess);
-      //   document.getElementById("already-guessed").innerHTML = alreadyGuessed.join(', ');
-      // }
-
-      // put something like:
-        // if (arrayName.includes(userGuess);) {
-        //   move letter to Already Guessed Array
-        // }
-
-    }
-    if (currentWordArray.includes(userGuess) {
-      
     }
 
-    remainingGuesses--;
-    document.getElementById("guesses-remaining").innerHTML = remainingGuesses;
+    if (remainingCorrectGuesses <= 0) {
+      alert("YOU WIN!"); // Change this to an html element...
+      wins++;
+
+    }
+
+    document.getElementById("guesses-remaining").innerHTML = remainingWrongGuesses;
+    document.getElementById("already-guessed").innerHTML = alreadyGuessed.join(', ');
+    console.log(remainingCorrectGuesses);
   }
-
-  // call the function:
-  getLetters();
 
 }
 
 
 // START GAME
-document.onkeyup = function () {
+document.onkeyup = function newGame() {
   hangmanGame();
-  document.getElementById("guesses-remaining").innerHTML = remainingGuesses;
+  getLetters();
+  remainingCorrectGuesses = currentWordArray.length;
+  document.getElementById("game-begin")
+  document.getElementById("guesses-remaining").innerHTML = remainingWrongGuesses;
   document.getElementById("wins").innerHTML = wins;
   document.getElementById("word-blanks").innerHTML = blanksArray.join(' ');
 }
