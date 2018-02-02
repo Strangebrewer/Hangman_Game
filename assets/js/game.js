@@ -1,30 +1,46 @@
-// WORKING CODE
-// This is my word array - no multi-word names unless I get the game built and have time to go back and figure out parsing spaces vs. letters:
-var bands = ["tool", "soundgarden", "nirvana", "live", "morcheeba", "beck"];
-// This variable defines the word currently in play
-var currentWord = bands[0];
+// Defining variables
+var words = ["soundgarden", "tool", "nirvana", "live", "morcheeba", "beck"];
+var currentWord;
 var currentWordArray = [];
 var blanksArray = [];
-var displayWord;
-var displayBlanks = [];
-var wins = 0;
-var remainingCorrectGuesses; // = currentWordArray.length minus non-unique letters
-var remainingWrongGuesses = 6;
 var alreadyGuessed = [];
-// This function takes the currentWord, pushes each letter into the currentWordArray and then puts a blank into blanksArray for each letter; then, it joins them into one string for display in the html:
+var wins = 0;
+var losses = 0;
+var remainingCorrectGuesses;
+var remainingWrongGuesses = 6;
+
+// This function sets the initial conditions of each game and runs the game functions
+function newGame() {
+  getLetters();
+  hangmanGame();
+  remainingCorrectGuesses = currentWordArray.length;
+  // remainingWrongGuesses = 6;
+  document.getElementById("game-outcome").innerHTML = "";
+  document.getElementById("game-begin").innerHTML = "Good Luck!";
+  document.getElementById("guesses-remaining").innerHTML = remainingWrongGuesses;
+  document.getElementById("wins").innerHTML = wins;
+  document.getElementById("losses").innerHTML = losses;
+  document.getElementById("word-blanks").innerHTML = blanksArray.join(' ')
+}
+
+//This function resets the arrays after each game
+function reset() {
+  currentWordArray.length = 0;
+  blanksArray.length = 0;
+  alreadyGuessed.length = 0;
+  words.shift();
+}
+
+// This function sets the currentWord variable, pushes each letter into the currentWordArray, and puts a blank into blanksArray for each letter, joining them into one string for display in the html:
 function getLetters() {
+  currentWord = words[0];
   for (i = 0; i < currentWord.length; i++) {
     currentWordArray.push(currentWord.charAt(i));
     blanksArray.push('_');
   }
 }
 
-// getLetters();
-// Test - it works!
-//  console.log(currentWordArray.join(' '));
-//  console.log(blanksArray.join(' '));
-
-// GAME FUNCTION
+// This is the main game function
 function hangmanGame() {
 
   document.onkeyup = function (event) {
@@ -38,40 +54,55 @@ function hangmanGame() {
       wrongUserGuess = true;
     }
 
-    if (wrongUserGuess) {
+    for (i = 0; i < currentWordArray.length; i++) {
+      if (userGuess === currentWordArray[i]) {
+        blanksArray.splice(i, 1, currentWordArray[i]);
+        currentWordArray.splice(i, 1, "narf");
+        document.getElementById("word-blanks").innerHTML = blanksArray.join(' ');
+        remainingCorrectGuesses--;
+      }
+    }
+
+    if (alreadyGuessed.includes(userGuess)) {
+
+    } else if (wrongUserGuess) {
       alreadyGuessed.push(userGuess);
       remainingWrongGuesses--;
     }
 
-    for (i = 0; i < currentWordArray.length; i++) {
-      if (userGuess === currentWordArray[i]) {
-        blanksArray.splice(i, 1, currentWordArray[i]);
-        remainingCorrectGuesses--;
-        document.getElementById("word-blanks").innerHTML = blanksArray.join(' ');
+    if (remainingCorrectGuesses <= 0) {
+      wins++;
+      document.getElementById("wins").innerHTML = wins;
+      document.getElementById("game-outcome").innerHTML = "YOU WIN!";
+      document.getElementById("game-begin").innerHTML = "Press Any Key to Play Again";
+      reset();
+      document.onkeyup = function () {
+        newGame();
       }
+      console.log(words[0]);
     }
 
-    if (remainingCorrectGuesses <= 0) {
-      alert("YOU WIN!"); // Change this to an html element...
-      wins++;
-
+    if (remainingWrongGuesses <= 0) {
+      losses++;
+      document.getElementById("losses").innerHTML = losses;
+      document.getElementById("game-outcome").innerHTML = "YOU LOSE!";
+      document.getElementById("game-begin").innerHTML = "Press Any Key to Play Again";
+      document.getElementById("word-blanks").innerHTML = currentWord;
+      reset();
+      document.onkeyup = function () {
+        newGame();
+      }
+      console.log(words[0]);
     }
 
     document.getElementById("guesses-remaining").innerHTML = remainingWrongGuesses;
     document.getElementById("already-guessed").innerHTML = alreadyGuessed.join(', ');
-    console.log(remainingCorrectGuesses);
   }
 
 }
 
 
-// START GAME
-document.onkeyup = function newGame() {
-  hangmanGame();
-  getLetters();
-  remainingCorrectGuesses = currentWordArray.length;
-  document.getElementById("game-begin")
-  document.getElementById("guesses-remaining").innerHTML = remainingWrongGuesses;
-  document.getElementById("wins").innerHTML = wins;
-  document.getElementById("word-blanks").innerHTML = blanksArray.join(' ');
+// This starts the game
+document.onkeyup = function () {
+  newGame();
 }
