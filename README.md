@@ -11,8 +11,10 @@ This project was quite a bit more complex than I thought it would be, but it was
 
 <ul>
   <li>Figuring out a way to prevent the same key from registering more than once if pressed more than once</li>
-  <li>Figuring out how to allow for spaces between words in rounds with more than one word</li>
+  <li>Figuring out how to allow for spaces between words in multiple-word values (e.g. 'Pink Floyd')</li>
   <li>Accounting for spaces between words without requiring the user to guess a space or a dash to complete the conditions for winning the game</li>
-  <li>Storing the index variable from the previous round in order to keep the song playing until the next word is revealed but still be able to turn it off once the next sond starts</li>
-  <li>Only allowing each word array value to be used once without removing it from the array</li>
+  <li>Storing the index variable from the previous round in order to keep the previous song playing until the next word is revealed while still being able to turn the song off once the next song starts</li>
+  <li>Only allowing each word to be used once without removing it from the array</li>
 </ul>
+
+...and I got a good laugh when I found myself thinking of things like driving, opening my water bottle, making lunch, etc. in terms of conditionals, functions, for loops, arrays, variables, scope... I'm either going insane, or this is beginning to make sense...
