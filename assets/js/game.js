@@ -62,7 +62,7 @@ var wins = 0;
 var losses = 0;
 var numSpaces = 0;
 var remainingCorrectGuesses;
-var remainingWrongGuesses = 7;
+var remainingWrongGuesses = 6;
 var usedWords = [];
 
 function assignWord() {
@@ -76,7 +76,7 @@ function reset() {
   displayLoss.length = 0;
   blanksArray.length = 0;
   alreadyGuessed.length = 0;
-  remainingWrongGuesses = 7;
+  remainingWrongGuesses = 6;
   numSpaces = 0;
   document.getElementById("game-outcome").style.animation = "none";
   document.getElementById("game-outcome").style.animationIterationCount = "0";
